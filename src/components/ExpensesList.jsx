@@ -1,19 +1,50 @@
-import Expense from "./Expense"
+import Expense from "./Expense";
 
-function ExpensesList({expenses}) {
-  return (
-    <div className="listado-gastos contenedor">
-        <h2>{expenses.length ? 'Expenses' : 'No expenses yet'}</h2>
+function ExpensesList({
+    expenses,
+    setEditExpense,
+    deleteExpense,
+    filter,
+    filteredExpenses,
+}) {
 
-        {expenses.map((expense) => {
-            return (
-                <Expense 
-                key={expense.id}
-                expense={expense}
-                />
-            )
-        })}
-    </div>
-  )
+    return (
+        <div className="listado-gastos contenedor">
+            {filter ? (
+                <>
+                    <h2>
+                        {filteredExpenses.length
+                            ? "Expenses"
+                            : "No expenses yet"}
+                    </h2>
+                    {filteredExpenses.map((expense) => (
+                        <Expense
+                            key={expense.id}
+                            expense={expense}
+                            setEditExpense={setEditExpense}
+                            deleteExpense={deleteExpense}
+                        />
+                    ))}
+                </>
+            ) : (
+                <>
+                    <h2>
+                        {filteredExpenses.length
+                            ? "Expenses"
+                            : "No expenses yet"}
+                    </h2>
+
+                    {expenses.map((expense) => (
+                        <Expense
+                            key={expense.id}
+                            expense={expense}
+                            setEditExpense={setEditExpense}
+                            deleteExpense={deleteExpense}
+                        />
+                    ))}
+                </>
+            )}
+        </div>
+    );
 }
-export default ExpensesList
+export default ExpensesList;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 //Components
 import Message from "./Message";
@@ -6,14 +6,35 @@ import Message from "./Message";
 //Assets
 import CloseBtn from "../assets/cerrar.svg";
 
-function Modal({ setModal, animateModal, setAnimateModal, saveSpent }) {
+function Modal({
+    setModal,
+    animateModal,
+    setAnimateModal,
+    saveSpent,
+    editExpense,
+    setEditExpense
+}) {
     const [name, setName] = useState("");
     const [amount, setAmount] = useState(0);
     const [category, setCategory] = useState("");
-    const [message, setMessage] = useState("")
+    const [message, setMessage] = useState("");
+    const [id, setId] = useState("")
+    const [date, setDate] = useState("")
+
+    useEffect(() => {
+        if (Object.keys(editExpense).length > 0) {
+        setName(editExpense.name)
+        setAmount(editExpense.amount)
+        setCategory(editExpense.category)
+        setId(editExpense.id)
+        setDate(editExpense.date)
+        }
+    }, [])
+    
 
     const closeModal = () => {
         setAnimateModal(false);
+        setEditExpense({})
 
         setTimeout(() => {
             setModal(false);
@@ -21,22 +42,20 @@ function Modal({ setModal, animateModal, setAnimateModal, saveSpent }) {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        if([name, amount,category].includes("")) {
-            setMessage("All fields are mandatory")
+        if ([name, amount, category].includes("")) {
+            setMessage("All fields are mandatory");
 
             setTimeout(() => {
-                setMessage("")
+                setMessage("");
             }, 3000);
 
-            return
+            return;
         }
 
-
-        saveSpent({name, amount, category})
-        
-    } 
+        saveSpent({ name, amount, category, id, date });
+    };
 
     return (
         <div className="modal">
@@ -48,13 +67,11 @@ function Modal({ setModal, animateModal, setAnimateModal, saveSpent }) {
                 className={`formulario ${animateModal ? "animar" : "cerrar"}`}
                 onSubmit={handleSubmit}
             >
-                <legend>New Spent</legend>
-                {message && (
-                    <Message type="error">{message}</Message>
-                )}
+                <legend>{editExpense.name ? "Edit Expense" : "New Expense"}</legend>
+                {message && <Message type="error">{message}</Message>}
 
                 <div className="campo">
-                    <label htmlFor="name">Spent Name</label>
+                    <label htmlFor="name">Expense Name</label>
                     <input
                         type="text"
                         placeholder="Add the spent name"
@@ -95,7 +112,7 @@ function Modal({ setModal, animateModal, setAnimateModal, saveSpent }) {
                     </select>
                 </div>
 
-                <input type="submit" value="Add Spent" />
+                <input type="submit" value="Add Expense" />
             </form>
         </div>
     );
